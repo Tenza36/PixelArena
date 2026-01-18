@@ -12,8 +12,6 @@ class AAct3_PixelArenaGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+
 	AAct3_PixelArenaGameMode();
 };
-
-
-

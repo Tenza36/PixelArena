@@ -43,6 +43,7 @@ public:
 	UInputAction* SetDestinationTouchAction;
 
 protected:
+
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
@@ -57,6 +58,9 @@ protected:
 	void OnSetDestinationReleased();
 	void OnTouchTriggered();
 	void OnTouchReleased();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_SetDestination(FVector DestLocation);
 
 private:
 	FVector CachedDestination;
