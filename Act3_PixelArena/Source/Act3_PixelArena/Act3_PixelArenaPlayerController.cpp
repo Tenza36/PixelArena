@@ -1,98 +1,78 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "Act3_PixelArenaPlayerController.h"
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "NiagaraSystem.h"
-#include "NiagaraFunctionLibrary.h"
-#include "Act3_PixelArenaCharacter.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
-#include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
-#include "Engine/LocalPlayer.h"
-
-DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AAct3_PixelArenaPlayerController::AAct3_PixelArenaPlayerController()
 {
-	bShowMouseCursor = true;
+	bShowMouseCursor = true; // El ratón siempre es visible
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
+
+	// Configuraciones para asegurar que el mouse interactúe con el mundo
+	bEnableClickEvents = true;
+	bEnableMouseOverEvents = true;
 }
 
 void AAct3_PixelArenaPlayerController::BeginPlay()
 {
-	// Call the base class  
 	Super::BeginPlay();
 
-	//Add Input Mapping Context
+	// Añadir el contexto de mapeo de Enhanced Input al iniciar
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 }
 
+void AAct3_PixelArenaPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	// Actualizamos la rotación del personaje hacia el mouse en cada frame
+	if (GetPawn())
+	{
+		UpdateLookRotation();
+	}
+}
+
 void AAct3_PixelArenaPlayerController::SetupInputComponent()
 {
-	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	// Set up action bindings
+	// Vinculamos las acciones de clic con sus respectivos estados
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		// Setup mouse input events
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AAct3_PixelArenaPlayerController::OnInputStarted);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AAct3_PixelArenaPlayerController::OnSetDestinationTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AAct3_PixelArenaPlayerController::OnSetDestinationReleased);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AAct3_PixelArenaPlayerController::OnSetDestinationReleased);
-
-		// Setup touch input events
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AAct3_PixelArenaPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AAct3_PixelArenaPlayerController::OnTouchTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AAct3_PixelArenaPlayerController::OnTouchReleased);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AAct3_PixelArenaPlayerController::OnTouchReleased);
-	}
-	else
-	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 }
 
 void AAct3_PixelArenaPlayerController::OnInputStarted()
 {
+	// Detenemos cualquier navegación previa al iniciar un nuevo clic
 	StopMovement();
 }
 
-// Triggered every frame when the input is held down
 void AAct3_PixelArenaPlayerController::OnSetDestinationTriggered()
 {
-	// We flag that the input is being pressed
+	// Acumulamos el tiempo para diferenciar entre clic corto y largo
 	FollowTime += GetWorld()->GetDeltaSeconds();
-	
-	// We look for the location in the world where the player has pressed the input
-	FHitResult Hit;
-	bool bHitSuccessful = false;
-	if (bIsTouch)
-	{
-		bHitSuccessful = GetHitResultUnderFinger(ETouchIndex::Touch1, ECollisionChannel::ECC_Visibility, true, Hit);
-	}
-	else
-	{
-		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-	}
 
-	// If we hit a surface, cache the location
-	if (bHitSuccessful)
+	FHitResult Hit;
+	if (GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit))
 	{
 		CachedDestination = Hit.Location;
 	}
-	
-	// Move towards mouse pointer or touch
+
 	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn != nullptr)
+	if (ControlledPawn)
 	{
+		// Movimiento continuo: movemos al personaje paso a paso hacia el mouse
 		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
 		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
 	}
@@ -100,26 +80,85 @@ void AAct3_PixelArenaPlayerController::OnSetDestinationTriggered()
 
 void AAct3_PixelArenaPlayerController::OnSetDestinationReleased()
 {
-	// If it was a short press
+	// Umbral para decidir si el personaje debe seguir caminando o detenerse
+	const float ShortPressThreshold = 0.2f;
+
 	if (FollowTime <= ShortPressThreshold)
 	{
-		// We move there and spawn some particles
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		// CLIC CORTO: Navegación automática hasta el punto final
+		if (HasAuthority())
+		{
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+		}
+		else
+		{
+			Server_SetDestination(CachedDestination);
+		}
+	}
+	else
+	{
+		// CLIC LARGO: Detención inmediata al soltar el botón
+		StopMovement();
+		if (!HasAuthority())
+		{
+			Server_StopMovement();
+		}
 	}
 
-	FollowTime = 0.f;
+	FollowTime = 0.f; // Reiniciamos el temporizador
 }
 
-// Triggered every frame when the input is held down
-void AAct3_PixelArenaPlayerController::OnTouchTriggered()
+/** --- RPCs DE MOVIMIENTO --- **/
+
+bool AAct3_PixelArenaPlayerController::Server_SetDestination_Validate(FVector DestLocation) { return true; }
+
+void AAct3_PixelArenaPlayerController::Server_SetDestination_Implementation(FVector DestLocation)
 {
-	bIsTouch = true;
-	OnSetDestinationTriggered();
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
 }
 
-void AAct3_PixelArenaPlayerController::OnTouchReleased()
+bool AAct3_PixelArenaPlayerController::Server_StopMovement_Validate() { return true; }
+
+void AAct3_PixelArenaPlayerController::Server_StopMovement_Implementation()
 {
-	bIsTouch = false;
-	OnSetDestinationReleased();
+	StopMovement();
+}
+
+/** --- LÓGICA DE ROTACIÓN --- **/
+
+void AAct3_PixelArenaPlayerController::UpdateLookRotation()
+{
+	APawn* MyPawn = GetPawn();
+	FHitResult Hit;
+
+	// Obtenemos el impacto del mouse en el mundo
+	if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+	{
+		FVector Direction = (Hit.Location - MyPawn->GetActorLocation());
+		Direction.Z = 0.f; // Mantenemos al personaje nivelado en el plano
+
+		if (!Direction.IsNearlyZero())
+		{
+			FRotator NewRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+
+			// Aplicación local inmediata (Client-side prediction)
+			MyPawn->SetActorRotation(NewRotation);
+
+			// Notificamos al servidor para que replique a otros clientes
+			if (!HasAuthority())
+			{
+				Server_UpdateRotation(NewRotation);
+			}
+		}
+	}
+}
+
+bool AAct3_PixelArenaPlayerController::Server_UpdateRotation_Validate(FRotator NewRotation) { return true; }
+
+void AAct3_PixelArenaPlayerController::Server_UpdateRotation_Implementation(FRotator NewRotation)
+{
+	if (APawn* MyPawn = GetPawn())
+	{
+		MyPawn->SetActorRotation(NewRotation);
+	}
 }

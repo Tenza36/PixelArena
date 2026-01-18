@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Act3_PixelArenaModuleRules")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Development")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e69c30f727eb0e348cd188182053f169fdd0c3ca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b606f4866743310c2dba0453d3228e2f233682da")]
 [assembly: System.Reflection.AssemblyProductAttribute("Act3_PixelArenaModuleRules")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Act3_PixelArenaModuleRules")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

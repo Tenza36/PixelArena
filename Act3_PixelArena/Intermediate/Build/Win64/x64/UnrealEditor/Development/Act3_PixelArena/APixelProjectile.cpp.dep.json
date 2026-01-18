@@ -1,0 +1,13 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\usuario\\documents\\github\\pixelarena\\act3_pixelarena\\source\\act3_pixelarena\\private\\apixelprojectile.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\usuario\\documents\\github\\pixelarena\\act3_pixelarena\\intermediate\\build\\win64\\x64\\act3_pixelarenaeditor\\development\\unrealed\\sharedpch.unrealed.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\usuario\\documents\\github\\pixelarena\\act3_pixelarena\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\act3_pixelarena\\definitions.act3_pixelarena.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

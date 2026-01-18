@@ -1,68 +1,68 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
 #include "Act3_PixelArenaPlayerController.generated.h"
 
-/** Forward declaration to improve compiling times */
-class UNiagaraSystem;
-class UInputMappingContext;
-class UInputAction;
-
-DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
-
+/**
+ * Clase encargada de gestionar la entrada del jugador, el movimiento Top-Down
+ * y la sincronización de la rotación en red para el proyecto PixelArena.
+ */
 UCLASS()
-class AAct3_PixelArenaPlayerController : public APlayerController
+class ACT3_PIXELARENA_API AAct3_PixelArenaPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
 	AAct3_PixelArenaPlayerController();
 
-	/** Time Threshold to know if it was a short press */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	float ShortPressThreshold;
+	/** Ejecuta la lógica de rotación y actualización en cada frame. */
+	virtual void PlayerTick(float DeltaTime) override;
 
-	/** FX Class that we will spawn when clicking */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UNiagaraSystem* FXCursor;
+	/** --- CONFIGURACIÓN DE ENTRADA (ENHANCED INPUT) --- */
 
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
-	
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* SetDestinationClickAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	class UInputMappingContext* DefaultMappingContext;
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* SetDestinationTouchAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* SetDestinationClickAction;
 
 protected:
-	/** True if the controlled character should navigate to the mouse cursor. */
-	uint32 bMoveToMouseCursor : 1;
-
+	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
-	
-	// To add mapping context
-	virtual void BeginPlay();
 
-	/** Input handlers for SetDestination action. */
+	/** --- LÓGICA DE MOVIMIENTO --- */
+
+	/** Se ejecuta al presionar el clic por primera vez. */
 	void OnInputStarted();
+
+	/** Se ejecuta mientras se mantiene presionado el clic (movimiento continuo). */
 	void OnSetDestinationTriggered();
+
+	/** Se ejecuta al soltar el clic (decide entre moverse a un punto o detenerse). */
 	void OnSetDestinationReleased();
-	void OnTouchTriggered();
-	void OnTouchReleased();
+
+	/** RPC para procesar el movimiento de navegación en el servidor. */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_SetDestination(FVector DestLocation);
+
+	/** RPC para detener el movimiento del personaje en el servidor inmediatamente. */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_StopMovement();
+
+	/** --- LÓGICA DE ROTACIÓN SINCRONIZADA --- */
+
+	/** Calcula localmente la rotación hacia la posición del mouse. */
+	void UpdateLookRotation();
+
+	/** RPC para replicar la rotación del cliente a todos los demás jugadores a través del servidor. */
+	UFUNCTION(Server, Unreliable, WithValidation)
+	void Server_UpdateRotation(FRotator NewRotation);
 
 private:
+	/** Ubicación en el mundo donde el jugador hizo clic. */
 	FVector CachedDestination;
 
-	bool bIsTouch; // Is it a touch device
-	float FollowTime; // For how long it has been pressed
+	/** Tiempo acumulado que el botón de movimiento ha permanecido presionado. */
+	float FollowTime;
 };
-
-
