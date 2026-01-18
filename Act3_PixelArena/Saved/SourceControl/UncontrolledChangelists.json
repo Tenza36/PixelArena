@@ -1,0 +1,13 @@
+{
+	"version": 1,
+	"changelists": [
+		{
+			"guid": "00000000000000000000000000000000",
+			"description": "Default Uncontrolled Changelist",
+			"files": [
+				"C:/Users/usuario/Documents/GitHub/PixelArena/Act3_PixelArena/Content/StarterContent/Props/MaterialSphere.uasset",
+				"C:/Users/usuario/Documents/GitHub/PixelArena/Act3_PixelArena/Content/__ExternalActors__/TopDown/Maps/TopDownMap/E/D3/P6DMEXA2SXT1WM1MSNSUMT.uasset"
+			]
+		}
+	]
+}

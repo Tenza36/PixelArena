@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\Act3_PixelArena.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\Act3_PixelArena.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\Act3_PixelArenaEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\Act3_PixelArena">
+      <UniqueIdentifier>{5CA1529F-2553-36D7-8B41-8D6D988AEB7E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\Act3_PixelArena\Act3_PixelArena.Build.cs">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\Act3_PixelArena\Act3_PixelArena.cpp">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Act3_PixelArena\Act3_PixelArena.h">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Act3_PixelArena\Act3_PixelArenaCharacter.cpp">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Act3_PixelArena\Act3_PixelArenaCharacter.h">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Act3_PixelArena\Act3_PixelArenaGameMode.cpp">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Act3_PixelArena\Act3_PixelArenaGameMode.h">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Act3_PixelArena\Act3_PixelArenaPlayerController.cpp">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Act3_PixelArena\Act3_PixelArenaPlayerController.h">
+      <Filter>Source\Act3_PixelArena</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

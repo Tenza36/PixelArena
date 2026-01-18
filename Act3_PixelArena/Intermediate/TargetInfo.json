@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "Act3_PixelArena",
+			"Path": "..\\Source\\Act3_PixelArena.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "Act3_PixelArenaEditor",
+			"Path": "..\\Source\\Act3_PixelArenaEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
