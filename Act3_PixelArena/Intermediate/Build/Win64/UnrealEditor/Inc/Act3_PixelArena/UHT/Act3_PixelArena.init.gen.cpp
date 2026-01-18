@@ -17,13 +17,13 @@ void EmptyLinkFunctionForGeneratedCodeAct3_PixelArena_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0x80E30D31,
-				0x43A3647E,
+				0x402CB5F2,
+				0x0DB00C56,
 				METADATA_PARAMS(0, nullptr)
 			};
 			UECodeGen_Private::ConstructUPackage(Z_Registration_Info_UPackage__Script_Act3_PixelArena.OuterSingleton, PackageParams);
 		}
 		return Z_Registration_Info_UPackage__Script_Act3_PixelArena.OuterSingleton;
 	}
-	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_Act3_PixelArena(Z_Construct_UPackage__Script_Act3_PixelArena, TEXT("/Script/Act3_PixelArena"), Z_Registration_Info_UPackage__Script_Act3_PixelArena, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x80E30D31, 0x43A3647E));
+	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_Act3_PixelArena(Z_Construct_UPackage__Script_Act3_PixelArena, TEXT("/Script/Act3_PixelArena"), Z_Registration_Info_UPackage__Script_Act3_PixelArena, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x402CB5F2, 0x0DB00C56));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

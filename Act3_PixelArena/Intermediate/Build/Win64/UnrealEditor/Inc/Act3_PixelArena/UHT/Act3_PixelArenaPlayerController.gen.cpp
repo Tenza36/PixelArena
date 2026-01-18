@@ -6,80 +6,19 @@
 
 #include "UObject/GeneratedCppIncludes.h"
 #include "Act3_PixelArena/Act3_PixelArenaPlayerController.h"
-#include "UObject/CoreNet.h"
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeAct3_PixelArenaPlayerController() {}
 // Cross Module References
 	ACT3_PIXELARENA_API UClass* Z_Construct_UClass_AAct3_PixelArenaPlayerController();
 	ACT3_PIXELARENA_API UClass* Z_Construct_UClass_AAct3_PixelArenaPlayerController_NoRegister();
-	COREUOBJECT_API UScriptStruct* Z_Construct_UScriptStruct_FVector();
 	ENGINE_API UClass* Z_Construct_UClass_APlayerController();
 	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputAction_NoRegister();
 	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputMappingContext_NoRegister();
 	NIAGARA_API UClass* Z_Construct_UClass_UNiagaraSystem_NoRegister();
 	UPackage* Z_Construct_UPackage__Script_Act3_PixelArena();
 // End Cross Module References
-	DEFINE_FUNCTION(AAct3_PixelArenaPlayerController::execServer_SetDestination)
-	{
-		P_GET_STRUCT(FVector,Z_Param_DestLocation);
-		P_FINISH;
-		P_NATIVE_BEGIN;
-		if (!P_THIS->Server_SetDestination_Validate(Z_Param_DestLocation))
-		{
-			RPC_ValidateFailed(TEXT("Server_SetDestination_Validate"));
-			return;
-		}
-		P_THIS->Server_SetDestination_Implementation(Z_Param_DestLocation);
-		P_NATIVE_END;
-	}
-	struct Act3_PixelArenaPlayerController_eventServer_SetDestination_Parms
-	{
-		FVector DestLocation;
-	};
-	static FName NAME_AAct3_PixelArenaPlayerController_Server_SetDestination = FName(TEXT("Server_SetDestination"));
-	void AAct3_PixelArenaPlayerController::Server_SetDestination(FVector DestLocation)
-	{
-		Act3_PixelArenaPlayerController_eventServer_SetDestination_Parms Parms;
-		Parms.DestLocation=DestLocation;
-		ProcessEvent(FindFunctionChecked(NAME_AAct3_PixelArenaPlayerController_Server_SetDestination),&Parms);
-	}
 	void AAct3_PixelArenaPlayerController::StaticRegisterNativesAAct3_PixelArenaPlayerController()
 	{
-		UClass* Class = AAct3_PixelArenaPlayerController::StaticClass();
-		static const FNameNativePtrPair Funcs[] = {
-			{ "Server_SetDestination", &AAct3_PixelArenaPlayerController::execServer_SetDestination },
-		};
-		FNativeFunctionRegistrar::RegisterFunctions(Class, Funcs, UE_ARRAY_COUNT(Funcs));
-	}
-	struct Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics
-	{
-		static const UECodeGen_Private::FStructPropertyParams NewProp_DestLocation;
-		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
-#if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[];
-#endif
-		static const UECodeGen_Private::FFunctionParams FuncParams;
-	};
-	const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::NewProp_DestLocation = { "DestLocation", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(Act3_PixelArenaPlayerController_eventServer_SetDestination_Parms, DestLocation), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(0, nullptr) };
-	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::PropPointers[] = {
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::NewProp_DestLocation,
-	};
-#if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::Function_MetaDataParams[] = {
-		{ "ModuleRelativePath", "Act3_PixelArenaPlayerController.h" },
-	};
-#endif
-	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AAct3_PixelArenaPlayerController, nullptr, "Server_SetDestination", nullptr, nullptr, Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::PropPointers), sizeof(Act3_PixelArenaPlayerController_eventServer_SetDestination_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x80A80CC0, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::Function_MetaDataParams), Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::Function_MetaDataParams) };
-	static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::PropPointers) < 2048);
-	static_assert(sizeof(Act3_PixelArenaPlayerController_eventServer_SetDestination_Parms) < MAX_uint16);
-	UFunction* Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination()
-	{
-		static UFunction* ReturnFunction = nullptr;
-		if (!ReturnFunction)
-		{
-			UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination_Statics::FuncParams);
-		}
-		return ReturnFunction;
 	}
 	IMPLEMENT_CLASS_NO_AUTO_REGISTRATION(AAct3_PixelArenaPlayerController);
 	UClass* Z_Construct_UClass_AAct3_PixelArenaPlayerController_NoRegister()
@@ -89,7 +28,6 @@ void EmptyLinkFunctionForGeneratedCodeAct3_PixelArenaPlayerController() {}
 	struct Z_Construct_UClass_AAct3_PixelArenaPlayerController_Statics
 	{
 		static UObject* (*const DependentSingletons[])();
-		static const FClassFunctionLinkInfo FuncInfo[];
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam Class_MetaDataParams[];
 #endif
@@ -122,10 +60,6 @@ void EmptyLinkFunctionForGeneratedCodeAct3_PixelArenaPlayerController() {}
 		(UObject* (*)())Z_Construct_UPackage__Script_Act3_PixelArena,
 	};
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AAct3_PixelArenaPlayerController_Statics::DependentSingletons) < 16);
-	const FClassFunctionLinkInfo Z_Construct_UClass_AAct3_PixelArenaPlayerController_Statics::FuncInfo[] = {
-		{ &Z_Construct_UFunction_AAct3_PixelArenaPlayerController_Server_SetDestination, "Server_SetDestination" }, // 166823166
-	};
-	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AAct3_PixelArenaPlayerController_Statics::FuncInfo) < 2048);
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AAct3_PixelArenaPlayerController_Statics::Class_MetaDataParams[] = {
 		{ "HideCategories", "Collision Rendering Transformation" },
@@ -216,11 +150,11 @@ void EmptyLinkFunctionForGeneratedCodeAct3_PixelArenaPlayerController() {}
 		"Game",
 		&StaticCppClassTypeInfo,
 		DependentSingletons,
-		FuncInfo,
+		nullptr,
 		Z_Construct_UClass_AAct3_PixelArenaPlayerController_Statics::PropPointers,
 		nullptr,
 		UE_ARRAY_COUNT(DependentSingletons),
-		UE_ARRAY_COUNT(FuncInfo),
+		0,
 		UE_ARRAY_COUNT(Z_Construct_UClass_AAct3_PixelArenaPlayerController_Statics::PropPointers),
 		0,
 		0x008002A4u,
@@ -246,9 +180,9 @@ void EmptyLinkFunctionForGeneratedCodeAct3_PixelArenaPlayerController() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_usuario_Documents_GitHub_PixelArena_Act3_PixelArena_Source_Act3_PixelArena_Act3_PixelArenaPlayerController_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AAct3_PixelArenaPlayerController, AAct3_PixelArenaPlayerController::StaticClass, TEXT("AAct3_PixelArenaPlayerController"), &Z_Registration_Info_UClass_AAct3_PixelArenaPlayerController, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AAct3_PixelArenaPlayerController), 438424680U) },
+		{ Z_Construct_UClass_AAct3_PixelArenaPlayerController, AAct3_PixelArenaPlayerController::StaticClass, TEXT("AAct3_PixelArenaPlayerController"), &Z_Registration_Info_UClass_AAct3_PixelArenaPlayerController, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AAct3_PixelArenaPlayerController), 1495449308U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_usuario_Documents_GitHub_PixelArena_Act3_PixelArena_Source_Act3_PixelArena_Act3_PixelArenaPlayerController_h_1853927636(TEXT("/Script/Act3_PixelArena"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_usuario_Documents_GitHub_PixelArena_Act3_PixelArena_Source_Act3_PixelArena_Act3_PixelArenaPlayerController_h_1281329845(TEXT("/Script/Act3_PixelArena"),
 		Z_CompiledInDeferFile_FID_Users_usuario_Documents_GitHub_PixelArena_Act3_PixelArena_Source_Act3_PixelArena_Act3_PixelArenaPlayerController_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_usuario_Documents_GitHub_PixelArena_Act3_PixelArena_Source_Act3_PixelArena_Act3_PixelArenaPlayerController_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

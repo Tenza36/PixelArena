@@ -11,7 +11,6 @@
     <None Include="..\..\Source\Act3_PixelArenaEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
-    <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -59,18 +58,6 @@
     </ClCompile>
     <ClInclude Include="..\..\Source\Act3_PixelArena\Act3_PixelArenaPlayerController.h">
       <Filter>Source\Act3_PixelArena</Filter>
-    </ClInclude>
-    <Filter Include="Source\Act3_PixelArena\Private">
-      <UniqueIdentifier>{5CB3052C-FB5F-3051-8BC1-BAF173BD3119}</UniqueIdentifier>
-    </Filter>
-    <ClCompile Include="..\..\Source\Act3_PixelArena\Private\PixelHero.cpp">
-      <Filter>Source\Act3_PixelArena\Private</Filter>
-    </ClCompile>
-    <Filter Include="Source\Act3_PixelArena\Public">
-      <UniqueIdentifier>{7FA69283-CD03-322F-B409-3C33C8DF1ADD}</UniqueIdentifier>
-    </Filter>
-    <ClInclude Include="..\..\Source\Act3_PixelArena\Public\PixelHero.h">
-      <Filter>Source\Act3_PixelArena\Public</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,9 +11,6 @@
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
-#include "Net/UnrealNetwork.h" 
-
-
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -24,8 +21,6 @@ AAct3_PixelArenaPlayerController::AAct3_PixelArenaPlayerController()
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
 }
-
-
 
 void AAct3_PixelArenaPlayerController::BeginPlay()
 {
@@ -38,7 +33,6 @@ void AAct3_PixelArenaPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 }
-
 
 void AAct3_PixelArenaPlayerController::SetupInputComponent()
 {
@@ -65,8 +59,6 @@ void AAct3_PixelArenaPlayerController::SetupInputComponent()
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 }
-
-
 
 void AAct3_PixelArenaPlayerController::OnInputStarted()
 {
@@ -106,19 +98,20 @@ void AAct3_PixelArenaPlayerController::OnSetDestinationTriggered()
 	}
 }
 
-// --- IMPLEMENTACIÓN DE RPC DE RED ---
-
-bool AAct3_PixelArenaPlayerController::Server_SetDestination_Validate(FVector DestLocation)
+void AAct3_PixelArenaPlayerController::OnSetDestinationReleased()
 {
-	return true; // Validación básica de seguridad
+	// If it was a short press
+	if (FollowTime <= ShortPressThreshold)
+	{
+		// We move there and spawn some particles
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+	}
+
+	FollowTime = 0.f;
 }
 
-void AAct3_PixelArenaPlayerController::Server_SetDestination_Implementation(FVector DestLocation)
-{
-	UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation); 
-} 
-
-// --- TOUCH EVENTS ---
+// Triggered every frame when the input is held down
 void AAct3_PixelArenaPlayerController::OnTouchTriggered()
 {
 	bIsTouch = true;
@@ -129,6 +122,4 @@ void AAct3_PixelArenaPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
-} 
-
-
+}
