@@ -1,7 +1,3 @@
-Aquí tienes el contenido completo para tu archivo README.md. Está diseñado profesionalmente siguiendo los estándares de documentación técnica para que puedas copiarlo y pegarlo directamente en tu repositorio de GitHub.
-
-
-
 PixelArena: Multiplayer Top-Down Battle
 
 PixelArena es un prototipo de videojuego de acción multijugador en tiempo real desarrollado en Unreal Engine 5.3.2. El proyecto se centra en mecánicas de combate a distancia, movimiento sincronizado por red y una arquitectura autoritativa para garantizar la integridad del estado del juego.
