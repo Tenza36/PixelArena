@@ -29,8 +29,7 @@ public:
     class UStaticMeshComponent* MeshComp;
 
     /** * Función llamada automáticamente por el motor cuando el proyectil choca con algo.
-     * Debe estar marcada como UFUNCTION para que el sistema de delegados la reconozca.
-     */
+    */
     UFUNCTION()
     void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 

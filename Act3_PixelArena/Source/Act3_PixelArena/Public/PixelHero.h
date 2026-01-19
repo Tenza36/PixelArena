@@ -5,8 +5,8 @@
 #include "PixelHero.generated.h"
 
 /**
- * Clase principal del héroe para PixelArena.
- * Gestiona la cámara top-down, la salud replicada y el sistema de combate por proyectiles.
+ * Clase del Héroe para PixelArena.
+ * Gestiona el movimiento, combate replicado y la interfaz de salud sobre la cabeza.
  */
 UCLASS()
 class ACT3_PIXELARENA_API APixelHero : public ACharacter
@@ -17,53 +17,66 @@ public:
 	APixelHero();
 
 protected:
-	/** Llamado cuando comienza el juego o cuando el actor aparece. */
 	virtual void BeginPlay() override;
 
 public:
 	/** --- COMPONENTES DE CÁMARA --- */
 
-	/** Brazo que sostiene la cámara a una distancia fija. */
+	/** Brazo que sujeta la cámara a una distancia fija */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	class USpringArmComponent* CameraBoom;
 
-	/** Cámara que sigue al personaje desde una perspectiva top-down. */
+	/** Cámara principal desde perspectiva Top-Down */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	class UCameraComponent* FollowCamera;
 
-	/** --- SISTEMA DE COMBATE Y DAÑO --- */
+	/** --- COMPONENTES DE INTERFAZ (UI) --- */
 
-	/** Salud actual del personaje, replicada desde el servidor. */
+	/** Componente que renderiza el Widget de la barra de vida sobre el personaje */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	class UWidgetComponent* HealthWidgetComp;
+
+	/** * Evento que se implementa en Blueprint para actualizar visualmente la ProgressBar.
+	 * Se llama automáticamente desde C++ cuando la vida cambia.
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+	void UpdateHealthBarVisual(float CurrentHealthPercent);
+
+	/** --- SISTEMA DE SALUD Y DAÑO --- */
+
+	/** Salud actual, sincronizada por el servidor */
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentHealth, BlueprintReadOnly, Category = "Stats")
 	float CurrentHealth;
 
-	/** Función de notificación que se ejecuta en el cliente cuando cambia la salud. */
+	/** Notificación de red: se ejecuta en los clientes cuando el servidor cambia la vida */
 	UFUNCTION()
 	void OnRep_CurrentHealth();
 
-	/** Clase del proyectil que se va a spawnear. Se debe asignar en el Blueprint. */
+	/** Función nativa de Unreal para procesar daño */
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	/** --- SISTEMA DE COMBATE --- */
+
+	/** Clase del proyectil a disparar (se asigna en el Blueprint) */
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TSubclassOf<class APixelProjectile> ProjectileClass;
 
-	/** Inicia el proceso de disparo (llamada local). */
+	/** Inicia la lógica de disparo */
 	void StartShooting();
 
-	/** RPC para ejecutar el spawn del proyectil en el servidor. */
+	/** RPC: Ejecuta el spawn del proyectil en el servidor */
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_Fire();
 
-	/** RPC para replicar efectos visuales y de sonido en todos los clientes. */
+	/** RPC: Replica efectos visuales (sonidos/partículas) en todos los clientes */
 	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_FireEffects();
 
-	/** Función nativa de Unreal para procesar el daño recibido. */
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-
 	/** --- CONFIGURACIÓN DE RED Y ENTRADA --- */
 
-	/** Configura las propiedades que deben replicarse por la red. */
+	/** Registra las variables que deben replicarse */
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	/** Configura la vinculación de teclas/acciones para el personaje. */
+	/** Vincula las acciones de teclado/mouse */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

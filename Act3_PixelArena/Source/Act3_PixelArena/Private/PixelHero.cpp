@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/WidgetComponent.h"
 #include "PixelProjectile.h"
 #include "DrawDebugHelpers.h"
 
@@ -19,7 +20,7 @@ APixelHero::APixelHero()
     CameraBoom->TargetArmLength = 800.f;
     CameraBoom->bDoCollisionTest = false;
 
-    // Bloqueamos la herencia para que la cámara NO gire con el personaje
+    // Bloqueamos la herencia de rotación para que la cámara sea fija
     CameraBoom->bUsePawnControlRotation = false;
     CameraBoom->bInheritPitch = false;
     CameraBoom->bInheritYaw = false;
@@ -30,9 +31,15 @@ APixelHero::APixelHero()
     FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     FollowCamera->bUsePawnControlRotation = false;
 
+    // --- INTERFAZ DE SALUD (WIDGET) ---
+    HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
+    HealthWidgetComp->SetupAttachment(RootComponent);
+    HealthWidgetComp->SetRelativeLocation(FVector(0.f, 0.f, 120.f)); // Altura sobre el personaje
+    HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);          // Siempre mira a la pantalla
+    HealthWidgetComp->SetDrawAtDesiredSize(true);
+
     // --- ATRIBUTOS ---
     CurrentHealth = 100.f;
-    // NOTA: DamageValue se eliminó de aquí porque pertenece a PixelProjectile.cpp
 
     // --- MOVIMIENTO Y ROTACIÓN ---
     if (GetCharacterMovement())
@@ -55,6 +62,9 @@ void APixelHero::BeginPlay()
     {
         CurrentHealth = 100.f;
     }
+
+    // Inicializamos la barra de vida al 100% al aparecer
+    UpdateHealthBarVisual(CurrentHealth / 100.f);
 }
 
 void APixelHero::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -69,17 +79,11 @@ void APixelHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
     PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &APixelHero::StartShooting);
 }
 
-// --- SISTEMA DE COMBATE (PROYECTILES) ---
+// --- SISTEMA DE COMBATE ---
 
-void APixelHero::StartShooting()
-{
-    Server_Fire();
-}
+void APixelHero::StartShooting() { Server_Fire(); }
 
-bool APixelHero::Server_Fire_Validate()
-{
-    return true;
-}
+bool APixelHero::Server_Fire_Validate() { return true; }
 
 void APixelHero::Server_Fire_Implementation()
 {
@@ -94,7 +98,6 @@ void APixelHero::Server_Fire_Implementation()
 
         GetWorld()->SpawnActor<APixelProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
     }
-
     Multicast_FireEffects();
 }
 
@@ -103,26 +106,22 @@ void APixelHero::Multicast_FireEffects_Implementation()
     if (GEngine)
     {
         FString LogRole = HasAuthority() ? TEXT("Servidor") : TEXT("Cliente");
-        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan, FString::Printf(TEXT("[%s] ¡FUEGO!"), *LogRole));
+        GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, FString::Printf(TEXT("[%s] ¡FUEGO!"), *LogRole));
     }
 }
 
-// --- SISTEMA DE DAÑO ---
+// --- SISTEMA DE DAÑO Y ACTUALIZACIÓN DE UI ---
 
 float APixelHero::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
-    // Llamamos a la versión base para procesar modificadores de daño si los hubiera
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
     if (HasAuthority())
     {
-        // Restamos la vida real procesada
         CurrentHealth = FMath::Clamp(CurrentHealth - ActualDamage, 0.0f, 100.0f);
 
-        if (GEngine)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("¡DAÑO RECIBIDO! Vida: %f"), CurrentHealth));
-        }
+        // El servidor actualiza su propia UI
+        UpdateHealthBarVisual(CurrentHealth / 100.f);
 
         if (CurrentHealth <= 0.f)
         {
@@ -135,8 +134,11 @@ float APixelHero::TakeDamage(float DamageAmount, struct FDamageEvent const& Dama
 
 void APixelHero::OnRep_CurrentHealth()
 {
+    // Los clientes actualizan su UI cuando el servidor replica el cambio de vida
+    UpdateHealthBarVisual(CurrentHealth / 100.f);
+
     if (GEngine)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, FString::Printf(TEXT("¡Recibí daño! Vida restante: %f"), CurrentHealth));
+        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, FString::Printf(TEXT("Vida: %f"), CurrentHealth));
     }
 }

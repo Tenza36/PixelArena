@@ -17,7 +17,7 @@ void EmptyLinkFunctionForGeneratedCodeAct3_PixelArena_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0x0E518CDD,
+				0x7B2145D7,
 				0xEE3AEBDA,
 				METADATA_PARAMS(0, nullptr)
 			};
@@ -25,5 +25,5 @@ void EmptyLinkFunctionForGeneratedCodeAct3_PixelArena_init() {}
 		}
 		return Z_Registration_Info_UPackage__Script_Act3_PixelArena.OuterSingleton;
 	}
-	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_Act3_PixelArena(Z_Construct_UPackage__Script_Act3_PixelArena, TEXT("/Script/Act3_PixelArena"), Z_Registration_Info_UPackage__Script_Act3_PixelArena, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x0E518CDD, 0xEE3AEBDA));
+	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_Act3_PixelArena(Z_Construct_UPackage__Script_Act3_PixelArena, TEXT("/Script/Act3_PixelArena"), Z_Registration_Info_UPackage__Script_Act3_PixelArena, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x7B2145D7, 0xEE3AEBDA));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
